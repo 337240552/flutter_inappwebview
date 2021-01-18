@@ -1,6 +1,13 @@
 .DS_Store
 .dart_tool/
 
+build/
+gradle/
+.gradle/
+gradlew
+gradlew.bat
+.idea/
+
 .vscode/
 .packages
 .pub/
