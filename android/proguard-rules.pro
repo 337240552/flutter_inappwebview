@@ -15,3 +15,5 @@
      private *;
 }
 -keep class flutter_inappwebview.** { *; }
+
+-keep class * implements io.flutter.embedding.engine.plugins.FlutterPlugin {*;}
