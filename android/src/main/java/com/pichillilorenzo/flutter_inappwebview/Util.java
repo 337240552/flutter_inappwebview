@@ -2,12 +2,21 @@ package com.pichillilorenzo.flutter_inappwebview;
 
 import android.content.res.AssetManager;
 import android.net.http.SslCertificate;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,11 +29,15 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -233,5 +246,32 @@ public class Util {
     }
 
     return x509Certificate;
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+  public static String JSONStringify(@Nullable Object value) {
+    if (value == null) {
+      return "null";
+    }
+    if (value instanceof Map) {
+      return new JSONObject((Map<String, Object>) value).toString();
+    } else if (value instanceof List) {
+      return new JSONArray((List<Object>) value).toString();
+    } else if (value instanceof String) {
+      return JSONObject.quote((String) value);
+    } else {
+      return JSONObject.wrap(value).toString();
+    }
+  }
+
+  public static boolean objEquals(@Nullable Object a, @Nullable Object b) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      return Objects.equals(a, b);
+    }
+    return (a == b) || (a != null && a.equals(b));
+  }
+
+  public static String replaceAll(String s, String oldString, String newString) {
+    return TextUtils.join(newString, s.split(Pattern.quote(oldString)));
   }
 }

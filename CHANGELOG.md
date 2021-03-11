@@ -1,16 +1,150 @@
-## 5.0.0
+## 5.1.0+4
 
+- Fixed "IOS scrolling crash the application" [#707](https://github.com/pichillilorenzo/flutter_inappwebview/issues/707)
+
+## 5.1.0+3
+
+- Fixed "Unsupported operation: Platform._operatingSystem" when compiling for Web again [#507](https://github.com/pichillilorenzo/flutter_inappwebview/issues/507)
+
+## 5.1.0+2
+
+- Fixed missing MATCH_PARENT layout params to the WebView on Android when it is wrapped by PullToRefreshLayout
+
+## 5.1.0+1
+
+- Added a test for the pull-to-refresh feature when used on Android. It requires the `useHybridComposition: true` Android-specific option, otherwise it will throw an exception.
+
+## 5.1.0
+
+- Added support for pull-to-refresh feature [#395](https://github.com/pichillilorenzo/flutter_inappwebview/issues/395)
+- Fixed issue not rendering WebView content when scrolling on iOS [#703](https://github.com/pichillilorenzo/flutter_inappwebview/issues/703)
+- Fixed `InAppBrowser.openData` method
+- `InAppBrowser.initialUserScripts`, `InAppBrowser.id`, `HeadlessInAppWebView.id` properties are `final` now
+
+## 5.0.5+3
+
+- Fixed Android `evaluateJavascript` method when using `contentWorld: ContentWorld.PAGE`
+
+## 5.0.5+2
+
+- Updated docs for iOS-specific options `alwaysBounceVertical` and `alwaysBounceHorizontal`
+
+## 5.0.5+1
+
+- Fixed "No bounce in inappwebview iOS" [#696](https://github.com/pichillilorenzo/flutter_inappwebview/issues/696)
+
+## 5.0.5
+
+- Updated Android `WebChromeClient.getDefaultVideoPoster`
+- Removed all the dependencies: `uuid`, `device_info`, `intl`, and `mime`
+
+## 5.0.4-nullsafety.1
+
+- Added `headers` and `statusCode` properties to IOSURLResponse class
+
+## 5.0.3-nullsafety.1
+
+- Fixed Android screenshot out of memory error
+- Fixed `getFavicons` WebView method
+
+## 5.0.2-nullsafety.1
+
+- Fixed missing `verticalScrollbarThumbColor`, `verticalScrollbarTrackColor`, `horizontalScrollbarThumbColor`, `horizontalScrollbarTrackColor` Android-specific WebView options when calling native java `setOptions()` method on Android
+
+## 5.0.1-nullsafety.1
+
+- Added `verticalScrollbarThumbColor`, `verticalScrollbarTrackColor`, `horizontalScrollbarThumbColor`, `horizontalScrollbarTrackColor` Android-specific WebView options
+- Fixed some null types and wrong casting
+
+## 5.0.0-nullsafety.0
+
+- Added support for Dart null-safety feature
 - Added Android Hybrid Composition support "Use PlatformViewLink widget for Android WebView" [#462](https://github.com/pichillilorenzo/flutter_inappwebview/pull/462) (thanks to [plateaukao](https://github.com/plateaukao) and [tneotia](https://github.com/tneotia))
+- Added `allowUniversalAccessFromFileURLs` and `allowFileAccessFromFileURLs` WebView options also for iOS (also thanks to [liranhao](https://github.com/liranhao))
+- Added limited cookies support on iOS below 11.0 using JavaScript
+- Added `IOSCookieManager` class and `CookieManager.instance().ios.getAllCookies` iOS-specific method
+- Added `UserScript`, `UserScriptInjectionTime`, `ContentWorld`, `AndroidWebViewFeature`, `AndroidServiceWorkerController`, `AndroidServiceWorkerClient`, `ScreenshotConfiguration`, `IOSWKPDFConfiguration`, `URLRequest` classes
+- Added `initialUserScripts` WebView option
+- Added `addUserScript`, `addUserScripts`, `removeUserScript`, `removeUserScripts`, `removeUserScriptsByGroupName`, `removeAllUserScripts`, `callAsyncJavaScript`, `isSecureContext` WebView methods
+- Added `contentWorld` argument to `evaluateJavascript` WebView method
+- Added `isDirectionalLockEnabled`, `mediaType`, `pageZoom`, `limitsNavigationsToAppBoundDomains`, `useOnNavigationResponse`, `applePayAPIEnabled`, `allowingReadAccessTo`, `disableLongPressContextMenuOnLinks` iOS-specific WebView options
+- Added `handlesURLScheme`, `createPdf`, `createWebArchiveData` iOS-specific WebView methods
+- Added `iosOnNavigationResponse` and `iosShouldAllowDeprecatedTLS` iOS-specific WebView events
+- Added `iosAnimated` optional argument to `zoomBy` WebView method
+- Added `screenshotConfiguration` optional argument to `takeScreenshot` WebView method
+- Added `scriptHtmlTagAttributes` optional argument to `injectJavascriptFileFromUrl` WebView method
+- Added `cssLinkHtmlTagAttributes` optional argument to `injectCSSFileFromUrl` WebView method
+- Added `iosAllowingReadAccessTo` iOS-specific optional argument to `loadUrl` WebView method
+- Added new iOS-specific attributes to `ShouldOverrideUrlLoadingRequest` and `CreateWindowRequest` classes
+- Added `toolbarTopTranslucent`, `toolbarTopTintColor`, `toolbarBottomTintColor`, `toolbarTopBarTintColor` ios-specific InAppBrowser options
+- Updated integration tests
 - Merge "Upgraded appcompat to 1.2.0-rc-02" [#465](https://github.com/pichillilorenzo/flutter_inappwebview/pull/465) (thanks to [andreidiaconu](https://github.com/andreidiaconu))
 - Merge "Added missing field 'headers' which returned by WebResourceResponse.toMap()" [#490](https://github.com/pichillilorenzo/flutter_inappwebview/pull/490) (thanks to [Doflatango](https://github.com/Doflatango))
 - Merge "Fix: added iOS fallback module import" [#466](https://github.com/pichillilorenzo/flutter_inappwebview/pull/466) (thanks to [Eddayy](https://github.com/Eddayy))
 - Merge "Fix NullPointerException after taking a photo by a camera app on Android" [#492](https://github.com/pichillilorenzo/flutter_inappwebview/pull/492) (thanks to [AAkira](https://github.com/AAkira))
+- Merge "iOS CookieManager.getCookies - Check that URL has suffix of cookie do…" [#658](https://github.com/pichillilorenzo/flutter_inappwebview/pull/658) (thanks to [arneke](https://github.com/arneke))
+- Merge "Add NTLM Auth" [#634](https://github.com/pichillilorenzo/flutter_inappwebview/pull/634) (thanks to [albatrosify](https://github.com/albatrosify))
+- Merge "iOS ChromeSafariBrowserManager - Fixing unnecessary casting of rootViewController to FlutterViewController" [#567](https://github.com/pichillilorenzo/flutter_inappwebview/pull/567) (thanks to [gunantosteven](https://github.com/gunantosteven))
+- Merge "Fix _channel.invokeMethod name for injectCSSFileFromUrl method" [#645](https://github.com/pichillilorenzo/flutter_inappwebview/pull/645) (thanks to [omralcrt](https://github.com/omralcrt))
+- Merge "Add android media intents on wildcard input accept" [#620](https://github.com/pichillilorenzo/flutter_inappwebview/pull/620) (thanks to [cbodin](https://github.com/cbodin))
+- Merge "Add ChromeSafariBrowser support for Android 11" [#538](https://github.com/pichillilorenzo/flutter_inappwebview/pull/538) (thanks to [DRSchlaubi](https://github.com/DRSchlaubi))
+- Merge "fix(iOS): missing implementation of method zoomBy" [#670](https://github.com/pichillilorenzo/flutter_inappwebview/pull/670) (thanks to [pcqpcq](https://github.com/pcqpcq))
+- Merge "[mod] Fix all issues relate to long click in Android version 7.0 (#657, #527)" [#671](https://github.com/pichillilorenzo/flutter_inappwebview/pull/671) (thanks to [MrNinja](https://github.com/MrNinja))
+- Merge "Fix ViewGroup.removeView NullPointerException (#450)" [#683](https://github.com/pichillilorenzo/flutter_inappwebview/pull/683) (thanks to [toda-bps](https://github.com/toda-bps))
+- Fixed missing properties initialization when using InAppWebViewController.fromInAppBrowser
 - Fixed "Issue in Flutter web: 'Unsupported operation: Platform._operatingSystem'" [#507](https://github.com/pichillilorenzo/flutter_inappwebview/issues/507)
 - Fixed "window.flutter_inappwebview.callHandler is not a function" [#218](https://github.com/pichillilorenzo/flutter_inappwebview/issues/218)
 - Fixed "Android ContentBlocker - java.lang.NullPointerException ContentBlockerTrigger resource type" [#506](https://github.com/pichillilorenzo/flutter_inappwebview/issues/506)
 - Fixed "Android CookieManager throws error caused by websites that are sending back illegal/invalid cookies." [#476](https://github.com/pichillilorenzo/flutter_inappwebview/issues/476)
 - Fixed missing `clearHistory` webview method implementation on Android
 - Fixed iOS crash when using CookieManager getCookies for an URL and the host URL is `null`
+- Fixed "IOS does not support allowUniversalAccessFromFileURLs" [#654](https://github.com/pichillilorenzo/flutter_inappwebview/issues/654)
+- Fixed "Failed to load WebView provider: No WebView installed" [#642](https://github.com/pichillilorenzo/flutter_inappwebview/issues/642)
+- Fixed "java.net.MalformedURLException: unknown protocol: wss - Error using library sipml5 in flutter_inappwebview" [#614](https://github.com/pichillilorenzo/flutter_inappwebview/issues/614)
+- Fixed "Android 10 clipboard not working properly" [#678](https://github.com/pichillilorenzo/flutter_inappwebview/issues/678) (thanks to [armadastate](https://github.com/armadastate))
+
+### BREAKING CHANGES
+
+- Minimum Flutter version required is `1.22.2` and Dart SDK `>=2.12.0-0 <3.0.0`
+- iOS Xcode version `>= 12`
+- `allowUniversalAccessFromFileURLs` and `allowFileAccessFromFileURLs` WebView options moved from Android-specific options to cross-platform options
+- Added `callAsyncJavaScript` name to the list of javaScriptHandlerForbiddenNames
+- Moved `saveWebArchive` WebView method from Android-specific to cross-platform
+- Moved `progressBar` InAppBroswer from Android-specific option to cross-platform option and renamed to `hideProgressBar`
+- Renamed `HttpAuthChallenge` to `URLAuthenticationChallenge`
+- Updated `basicConstraints`, `subjectKeyIdentifier`, `authorityKeyIdentifier`, `certificatePolicies`, `cRLDistributionPoints`, `authorityInfoAccess` attributes type of `X509Certificate`
+- Updated "WebView.storyboard" for InAppBrowser iOS representation
+- Renamed `ShouldOverrideUrlLoadingAction` class to `NavigationActionPolicy`
+- Renamed `ProtectionSpace` class to `URLProtectionSpace`
+- Renamed `ProtectionSpaceHttpAuthCredentials` to `URLProtectionSpaceHttpAuthCredentials`
+- Renamed `CreateWindowRequest` class to `CreateWindowAction`
+- Renamed `initialUrl` to `initialUrlRequest` WebView attribute and made it of type `URLRequest`
+- Renamed `toolbarTop` InAppBrowser cross-platform option to `hideToolbarTop`
+- Renamed `toolbarBottom` InAppBrowser ios-specific option to `hideToolbarBottom`
+- Removed `debuggingEnabled` WebView option; on Android you should use now the `AndroidInAppWebViewController.setWebContentsDebuggingEnabled(bool debuggingEnabled)` static method; on iOS, debugging is always enabled
+- Removed `androidOnRequestFocus` event because it is never called
+- Removed `initialHeaders` WebView attribute. Use `URLRequest.headers` attribute
+- Removed `headers` argument from `loadFile` WebView method
+- Removed `headers` argument from `openFile` InAppBrowser method
+- Removed `headers` argument from `loadUrl` WebView method, renamed the `url` argument to `urlRequest` and made it of type `URLRequest`
+- Removed `headers` argument from `openFile` InAppBrowser method
+- Removed `headers` argument from `openUrl` InAppBrowser method, renamed the `url` argument to `urlRequest` and made it of type `URLRequest`
+- Removed `fallback` argument from `ChromeSafariBrowser` constructor. Check for availability of `ChromeSafariBrowser` if you want show one or the other.
+- Removed `scheme` argument from `onLoadResourceCustomScheme` WebView event. Use the `Uri url` parameter now.
+- Removed `ShouldOverrideUrlLoadingRequest` class and replaced with `NavigationAction`
+- Changed `zoomBy` WebView method signature
+- Changed type of `urlFile` argument of `injectCSSFileFromUrl` WebView method to `Uri`
+- Changed type of `urlFile` argument of `injectJavascriptFileFromUrl` WebView method to `Uri`
+- Changed return type of `getOriginalUrl` Android-specific WebView method to `Uri`
+- Changed return type of `getSafeBrowsingPrivacyPolicyUrl` Android-specific WebView method to `Uri`
+- Changed type of `url` argument of `onLoadStart`, `onLoadStop`, `onLoadError`, `onLoadHttpError`, `onLoadResourceCustomScheme`, `onUpdateVisitedHistory`, `onPrint`, `onPageCommitVisible`, `androidOnSafeBrowsingHit`, `androidOnRenderProcessUnresponsive`, `androidOnRenderProcessResponsive`, `androidOnFormResubmission`, `androidOnReceivedTouchIconUrl` WebView events to `Uri`
+- Changed type of `baseUrl` and `androidHistoryUrl` arguments of `loadData` WebView method and `openData` InAppBrowser method
+- Changed `openUrl` InAppBrowser method to `openUrlRequest`
+- Changed type of `url` argument of `openWithSystemBrowser` InAppBrowser method to `Uri`
+- Changed all InAppBrowser color options type from `String` to `Color`
+- Changed all ChromeSafariBrowser color options type from `String` to `Color`
+- Updated attributes of `ShouldOverrideUrlLoadingRequest`, `ServerTrustChallenge` and `ClientCertChallenge` classes
+- Changed type of `url` attribute to `Uri` for `JsAlertRequest`, `JsAlertConfirm`, `JsPromptRequest` classes
 
 ## 4.0.0+4
 

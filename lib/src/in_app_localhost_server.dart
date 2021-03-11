@@ -2,11 +2,12 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:mime/mime.dart';
+
+import 'mime_type_resolver.dart';
 
 ///This class allows you to create a simple server on `http://localhost:[port]/` in order to be able to load your assets file on a server. The default [port] value is `8080`.
 class InAppLocalhostServer {
-  HttpServer _server;
+  HttpServer? _server;
   int _port = 8080;
 
   InAppLocalhostServer({int port = 8080}) {
@@ -31,14 +32,14 @@ class InAppLocalhostServer {
 
     var completer = Completer();
 
-    runZoned(() {
+    runZonedGuarded(() {
       HttpServer.bind('127.0.0.1', _port).then((server) {
         print('Server running on http://localhost:' + _port.toString());
 
         this._server = server;
 
         server.listen((HttpRequest request) async {
-          var body = List<int>();
+          var body = [] as List<int>;
           var path = request.requestedUri.path;
           path = (path.startsWith('/')) ? path.substring(1) : path;
           path += (path.endsWith('/')) ? 'index.html' : '';
@@ -54,8 +55,7 @@ class InAppLocalhostServer {
           var contentType = ['text', 'html'];
           if (!request.requestedUri.path.endsWith('/') &&
               request.requestedUri.pathSegments.isNotEmpty) {
-            var mimeType =
-                lookupMimeType(request.requestedUri.path, headerBytes: body);
+            var mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
             if (mimeType != null) {
               contentType = mimeType.split('/');
             }
@@ -69,7 +69,7 @@ class InAppLocalhostServer {
 
         completer.complete();
       });
-    }, onError: (e, stackTrace) => print('Error: $e $stackTrace'));
+    }, (e, stackTrace) => print('Error: $e $stackTrace'));
 
     return completer.future;
   }
@@ -77,7 +77,7 @@ class InAppLocalhostServer {
   ///Closes the server.
   Future<void> close() async {
     if (this._server != null) {
-      await this._server.close(force: true);
+      await this._server!.close(force: true);
       print('Server running on http://localhost:$_port closed');
       this._server = null;
     }

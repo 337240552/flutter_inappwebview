@@ -7,6 +7,7 @@ Future<void> main() async {
     'NODE_SERVER_IP': Platform.environment['NODE_SERVER_IP'],
   };
 
-  final filename = 'example/test_driver/.env.dart';
-  await File(filename).writeAsString('final environment = ${json.encode(config)};');
+  final filename = 'example/integration_test/.env.dart';
+  await File(filename)
+      .writeAsString('final environment = ${json.encode(config)};');
 }

@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.webkit.ValueCallback;
 
-import com.pichillilorenzo.flutter_inappwebview.InAppWebView.FlutterWebViewFactory;
+import com.pichillilorenzo.flutter_inappwebview.chrome_custom_tabs.ChromeSafariBrowserManager;
+import com.pichillilorenzo.flutter_inappwebview.credential_database.CredentialDatabaseHandler;
+import com.pichillilorenzo.flutter_inappwebview.in_app_browser.InAppBrowserManager;
+import com.pichillilorenzo.flutter_inappwebview.in_app_webview.FlutterWebViewFactory;
+import com.pichillilorenzo.flutter_inappwebview.in_app_webview.HeadlessInAppWebViewManager;
 
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -15,13 +18,13 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.platform.PlatformViewRegistry;
-import io.flutter.view.FlutterMain;
 import io.flutter.view.FlutterView;
 
 public class InAppWebViewFlutterPlugin implements FlutterPlugin, ActivityAware {
 
   protected static final String LOG_TAG = "InAppWebViewFlutterPL";
 
+  public static PlatformUtil platformUtil;
   public static InAppBrowserManager inAppBrowserManager;
   public static HeadlessInAppWebViewManager headlessInAppWebViewManager;
   public static ChromeSafariBrowserManager chromeSafariBrowserManager;
@@ -29,6 +32,8 @@ public class InAppWebViewFlutterPlugin implements FlutterPlugin, ActivityAware {
   public static MyCookieManager myCookieManager;
   public static CredentialDatabaseHandler credentialDatabaseHandler;
   public static MyWebStorage myWebStorage;
+  public static ServiceWorkerManager serviceWorkerManager;
+  public static WebViewFeatureManager webViewFeatureManager;
   public static ValueCallback<Uri> filePathCallbackLegacy;
   public static ValueCallback<Uri[]> filePathCallback;
 
@@ -65,16 +70,26 @@ public class InAppWebViewFlutterPlugin implements FlutterPlugin, ActivityAware {
 
     platformViewRegistry.registerViewFactory(
                     "com.pichillilorenzo/flutter_inappwebview", new FlutterWebViewFactory(messenger, flutterView));
+
+    platformUtil = new PlatformUtil(messenger);
     inAppWebViewStatic = new InAppWebViewStatic(messenger);
     myCookieManager = new MyCookieManager(messenger);
     myWebStorage = new MyWebStorage(messenger);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      serviceWorkerManager = new ServiceWorkerManager(messenger);
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       credentialDatabaseHandler = new CredentialDatabaseHandler(messenger);
     }
+    webViewFeatureManager = new WebViewFeatureManager(messenger);
   }
 
   @Override
   public void onDetachedFromEngine(FlutterPluginBinding binding) {
+    if (platformUtil != null) {
+      platformUtil.dispose();
+      platformUtil = null;
+    }
     if (inAppBrowserManager != null) {
       inAppBrowserManager.dispose();
       inAppBrowserManager = null;
@@ -102,6 +117,14 @@ public class InAppWebViewFlutterPlugin implements FlutterPlugin, ActivityAware {
     if (inAppWebViewStatic != null) {
       inAppWebViewStatic.dispose();
       inAppWebViewStatic = null;
+    }
+    if (serviceWorkerManager != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      serviceWorkerManager.dispose();
+      serviceWorkerManager = null;
+    }
+    if (webViewFeatureManager != null) {
+      webViewFeatureManager.dispose();
+      webViewFeatureManager = null;
     }
     filePathCallbackLegacy = null;
     filePathCallback = null;

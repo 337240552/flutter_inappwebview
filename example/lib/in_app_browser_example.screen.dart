@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -6,28 +8,37 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'main.dart';
 
 class MyInAppBrowser extends InAppBrowser {
+  MyInAppBrowser(
+      {int? windowId, UnmodifiableListView<UserScript>? initialUserScripts})
+      : super(windowId: windowId, initialUserScripts: initialUserScripts);
+
   @override
   Future onBrowserCreated() async {
     print("\n\nBrowser Created!\n\n");
   }
 
   @override
-  Future onLoadStart(String url) async {
+  Future onLoadStart(url) async {
     print("\n\nStarted $url\n\n");
   }
 
   @override
-  Future onLoadStop(String url) async {
+  Future onLoadStop(url) async {
+    pullToRefreshController?.endRefreshing();
     print("\n\nStopped $url\n\n");
   }
 
   @override
-  void onLoadError(String url, int code, String message) {
+  void onLoadError(url, code, message) {
+    pullToRefreshController?.endRefreshing();
     print("Can't load $url.. Error: $message");
   }
 
   @override
-  void onProgressChanged(int progress) {
+  void onProgressChanged(progress) {
+    if (progress == 100) {
+      pullToRefreshController?.endRefreshing();
+    }
     print("Progress: $progress");
   }
 
@@ -37,24 +48,24 @@ class MyInAppBrowser extends InAppBrowser {
   }
 
   @override
-  Future<ShouldOverrideUrlLoadingAction> shouldOverrideUrlLoading(
-      ShouldOverrideUrlLoadingRequest shouldOverrideUrlLoadingRequest) async {
-    print("\n\nOverride ${shouldOverrideUrlLoadingRequest.url}\n\n");
-    return ShouldOverrideUrlLoadingAction.ALLOW;
+  Future<NavigationActionPolicy> shouldOverrideUrlLoading(
+      navigationAction) async {
+    print("\n\nOverride ${navigationAction.request.url}\n\n");
+    return NavigationActionPolicy.ALLOW;
   }
 
   @override
-  void onLoadResource(LoadedResource response) {
+  void onLoadResource(response) {
     print("Started at: " +
         response.startTime.toString() +
         "ms ---> duration: " +
         response.duration.toString() +
         "ms " +
-        response.url);
+        (response.url ?? '').toString());
   }
 
   @override
-  void onConsoleMessage(ConsoleMessage consoleMessage) {
+  void onConsoleMessage(consoleMessage) {
     print("""
     console output:
       message: ${consoleMessage.message}
@@ -72,9 +83,27 @@ class InAppBrowserExampleScreen extends StatefulWidget {
 }
 
 class _InAppBrowserExampleScreenState extends State<InAppBrowserExampleScreen> {
+
+  late PullToRefreshController pullToRefreshController;
+
   @override
   void initState() {
     super.initState();
+
+    pullToRefreshController = PullToRefreshController(
+      options: PullToRefreshOptions(
+        color: Colors.black,
+      ),
+      onRefresh: () async {
+        if (Platform.isAndroid) {
+          widget.browser.webViewController.reload();
+        } else if (Platform.isIOS) {
+          widget.browser.webViewController.loadUrl(
+              urlRequest: URLRequest(url: await widget.browser.webViewController.getUrl()));
+        }
+      },
+    );
+    widget.browser.pullToRefreshController = pullToRefreshController;
   }
 
   @override
@@ -87,28 +116,28 @@ class _InAppBrowserExampleScreenState extends State<InAppBrowserExampleScreen> {
         drawer: myDrawer(context: context),
         body: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                    onPressed: () async {
-                      await widget.browser.openFile(
-                          assetFilePath: "assets/index.html",
-                          options: InAppBrowserClassOptions(
-                              inAppWebViewGroupOptions: InAppWebViewGroupOptions(
-                                  crossPlatform: InAppWebViewOptions(
-                            debuggingEnabled: true,
-                            useShouldOverrideUrlLoading: true,
-                            useOnLoadResource: true,
-                          ))));
-                    },
-                    child: Text("Open In-App Browser")),
-                Container(height: 40),
-                RaisedButton(
-                    onPressed: () async {
-                      await InAppBrowser.openWithSystemBrowser(
-                          url: "https://flutter.dev/");
-                    },
-                    child: Text("Open System Browser")),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+              ElevatedButton(
+                  onPressed: () async {
+                    await widget.browser.openUrlRequest(
+                        urlRequest:
+                            URLRequest(url: Uri.parse("https://flutter.dev")),
+                        options: InAppBrowserClassOptions(
+                            inAppWebViewGroupOptions: InAppWebViewGroupOptions(
+                                crossPlatform: InAppWebViewOptions(
+                          useShouldOverrideUrlLoading: true,
+                          useOnLoadResource: true,
+                        ))));
+                  },
+                  child: Text("Open In-App Browser")),
+              Container(height: 40),
+              ElevatedButton(
+                  onPressed: () async {
+                    await InAppBrowser.openWithSystemBrowser(
+                        url: Uri.parse("https://flutter.dev/"));
+                  },
+                  child: Text("Open System Browser")),
             ])));
   }
 }
